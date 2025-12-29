@@ -2,9 +2,9 @@ version: '3.8'
 services:
   web:
     build: .
-    runtime: nvidia
+    runtime: 
     environment:
-      - DEVICE=cuda
+      - DEVICE=cpu
       - HF_TOKEN=${HF_TOKEN}
     ports:
       - 5000:5000
