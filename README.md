@@ -7,7 +7,7 @@
 
 A modern, production-ready Flask web application that transforms text prompts into stunning images using Stable Diffusion AI model. Features a beautiful, responsive UI with advanced customization options.
 
-![AI Image Generator Demo](https://via.placeholder.com/800x400/667eea/ffffff?text=project demo video.mp4)
+
 
 ## ✨ Features
 
@@ -33,7 +33,6 @@ A modern, production-ready Flask web application that transforms text prompts in
 - **CI/CD Ready**: GitHub Actions workflow included
 - **Environment Configuration**: Easy setup with environment variables
 
-## 📸 Screenshots
 
 ### Main Interface
 ```
