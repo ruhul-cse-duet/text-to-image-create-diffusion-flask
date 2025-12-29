@@ -396,7 +396,7 @@ pip install --upgrade accelerate
 
 - **Issues**: Open an issue on GitHub
 - **Questions**: Check existing issues or start a discussion
-- **Email**: your.email@example.com
+- **Email**: ruhul.cse.duet@gmail.com
 
 ## 📝 License
 
