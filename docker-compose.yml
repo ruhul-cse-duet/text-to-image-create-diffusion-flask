@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    runtime: nvidia
+    environment:
+      - DEVICE=cuda
+      - HF_TOKEN=${HF_TOKEN}
+    ports:
+      - 5000:5000
+    shm_size: '1gb'
+    deploy:
+      resources:
+        limits:
+          memory: 16G

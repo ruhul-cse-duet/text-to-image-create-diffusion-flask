@@ -1,0 +1,10 @@
+flask>=2.3.3
+diffusers>=0.32.0
+torch>=2.9.1
+transformers>=4.57.3
+accelerate>=0.20.0
+Pillow
+huggingface_hub>=0.34.0
+accelerate
+
+# python 3.11.14

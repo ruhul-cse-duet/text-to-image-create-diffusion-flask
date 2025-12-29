@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator - Text to Image</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background gradient -->
+    <div class="gradient-bg"></div>
+    
+    <!-- Main container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <rect width="40" height="40" rx="10" fill="url(#gradient1)"/>
+                    <path d="M20 10L25 20L20 30L15 20L20 10Z" fill="white" opacity="0.9"/>
+                    <defs>
+                        <linearGradient id="gradient1" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#667eea"/>
+                            <stop offset="100%" stop-color="#764ba2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>AI Image Generator</h1>
+            </div>
+            <p class="subtitle">Transform your words into stunning visuals</p>
+        </header>
+
+        <!-- Status indicator -->
+        <div id="status" class="status-card hidden">
+            <div class="status-icon">ℹ️</div>
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+
+        <!-- Main card -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Create Your Image</h2>
+                <p>Describe what you want to see and let AI bring it to life</p>
+            </div>
+
+            <!-- Prompt input -->
+            <div class="input-group">
+                <label for="prompt">Your Prompt</label>
+                <textarea 
+                    id="prompt" 
+                    placeholder="A serene Japanese garden with cherry blossoms, koi pond, traditional pagoda in background, soft morning light, photorealistic, 8k quality..."
+                    rows="4"
+                    maxlength="500"
+                ></textarea>
+                <div class="char-count">
+                    <span id="charCount">0</span> / 500 characters
+                </div>
+            </div>
+
+            <!-- Advanced options (collapsible) -->
+            <div class="advanced-section">
+                <button class="advanced-toggle" id="advancedToggle">
+                    <span>Advanced Options</span>
+                    <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                
+                <div class="advanced-content hidden" id="advancedContent">
+                    <div class="options-grid">
+                        <div class="option-group">
+                            <label for="steps">Inference Steps: <span id="stepsValue">28</span></label>
+                            <input type="range" id="steps" min="10" max="50" value="28" step="1">
+                            <small>More steps = better quality but slower</small>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label for="guidance">Guidance Scale: <span id="guidanceValue">7.5</span></label>
+                            <input type="range" id="guidance" min="1" max="20" value="7.5" step="0.5">
+                            <small>Higher = follows prompt more closely</small>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label for="width">Width: <span id="widthValue">512</span>px</label>
+                            <input type="range" id="width" min="256" max="1024" value="512" step="64">
+                        </div>
+                        
+                        <div class="option-group">
+                            <label for="height">Height: <span id="heightValue">512</span>px</label>
+                            <input type="range" id="height" min="256" max="1024" value="512" step="64">
+                        </div>
+                        
+                        <div class="option-group full-width">
+                            <label for="seed">Seed (optional - for reproducibility)</label>
+                            <input type="number" id="seed" placeholder="Leave empty for random">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="button-group">
+                <button class="btn btn-primary" id="generateBtn">
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2L13 8L19 9L14.5 13L16 19L10 16L4 19L5.5 13L1 9L7 8L10 2Z"/>
+                    </svg>
+                    <span>Generate Image</span>
+                </button>
+                
+                <button class="btn btn-secondary" id="randomBtn">
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M15 5L18 8L15 11M5 15L2 12L5 9M18 8H8M2 12H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Random Prompt</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Output section -->
+        <div id="outputSection" class="output-section hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Generated Image</h2>
+                    <button class="btn btn-small" id="downloadBtn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 12L3 7L4.5 5.5L7 8V1H9V8L11.5 5.5L13 7L8 12ZM2 14H14V16H2V14Z"/>
+                        </svg>
+                        Download
+                    </button>
+                </div>
+                
+                <div class="image-container">
+                    <div class="loader hidden" id="loader">
+                        <div class="spinner"></div>
+                        <p>Generating your image...</p>
+                        <p class="loader-tip">This may take 10-30 seconds</p>
+                    </div>
+                    
+                    <img id="generatedImage" alt="Generated image" class="generated-image hidden">
+                </div>
+                
+                <div class="image-details hidden" id="imageDetails">
+                    <h3>Generation Details</h3>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Prompt:</span>
+                            <span class="detail-value" id="detailPrompt"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Steps:</span>
+                            <span class="detail-value" id="detailSteps"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Guidance:</span>
+                            <span class="detail-value" id="detailGuidance"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Dimensions:</span>
+                            <span class="detail-value" id="detailDimensions"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example prompts -->
+        <div class="examples-section">
+            <h3>Need inspiration? Try these prompts:</h3>
+            <div class="examples-grid">
+                <div class="example-card" data-prompt="A majestic lion sitting on a cliff at sunset, golden hour lighting, cinematic, highly detailed, 8k">
+                    <div class="example-icon">🦁</div>
+                    <p>Wildlife Photography</p>
+                </div>
+                
+                <div class="example-card" data-prompt="Futuristic cyberpunk city at night, neon lights, rain-soaked streets, flying cars, blade runner style, ultra detailed">
+                    <div class="example-icon">🌃</div>
+                    <p>Cyberpunk City</p>
+                </div>
+                
+                <div class="example-card" data-prompt="A cozy cottage in a magical forest, bioluminescent mushrooms, fireflies, moonlight filtering through trees, fantasy art">
+                    <div class="example-icon">🏡</div>
+                    <p>Fantasy Scene</p>
+                </div>
+                
+                <div class="example-card" data-prompt="Professional portrait of an astronaut in space, Earth in background, dramatic lighting, National Geographic style, 8k">
+                    <div class="example-icon">👨‍🚀</div>
+                    <p>Space Portrait</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by Stable Diffusion • Built with Flask</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
